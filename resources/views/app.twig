@@ -1,0 +1,140 @@
+{% include "layouts/header.twig" %}
+
+<div class="container-fluid">
+    <div class="row wrapper">
+        <div class="col-md-6 left">
+            <div class="row">
+                <h3><span class="label label-primary">Сделать заказ</span></h3>
+            </div>
+            <div class="row">
+                <div class="panel-body">
+                    <form action="{{ path_for("zakaz") }}" method="post" class="form-horizontal" id="form">
+                        <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">Name: </label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="name" name="name" value="" data-validate="required">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="surname" class="col-sm-2 control-label">Surname: </label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="surname" name="surname" value="" data-validate="required">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="col-sm-2 control-label">E-mail: </label>
+                            <div class="col-sm-6">
+                                <input type="text" class="form-control" id="email" name="email" value="" data-validate="required">
+                            </div>
+                        </div>
+                        <div class="form-group" id="zakaz">
+                            <label for="vendor" class="col-sm-1 control-label">Vendor: </label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="vendor" name="vendor[]" value="" data-validate="required"/>
+                            </div>
+                            <label for="product" class="col-sm-1 control-label">Product: </label>
+                            <div class="col-sm-2">
+                                <input type="text" class="form-control" id="product" name="product[]" value="" data-validate="required"/>
+                            </div>
+                            <label for="count" class="col-sm-1 control-label">Count: </label>
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control" id="count" name="count[]" value="1" min='1' data-validate="required"/>
+                            </div>
+                            <label for="price" class="col-sm-1 control-label">Price: </label>
+                            <div class="col-sm-2">
+                                <input type="number" class="form-control" id="price" name="price[]" step="0.01" min='0.01' value="0.01" data-validate="required"/>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-info" id="add"><strong>Add zakaz</strong></button>
+                        <button type="submit" class="btn btn-primary"><strong>Create</strong></button>
+                        {{ csrf.field | raw }}
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 right">
+            <div class="row">
+            <h3><span class="label label-primary">Заказ</span></h3>
+        </div>
+        <div class="row">
+            <div class="panel-body">
+                <form action="{{ path_for("search") }}" method="post" class="form-horizontal" id="form">
+                    <div class="form-group">
+                        <label for="email" class="col-sm-2 control-label">Search params: </label>
+                        <div class="col-sm-6">
+                           <input type="radio" name="s_type" id="s_id">ID&emsp;
+                            <input type="radio" name="s_type" id="s_date">Date&emsp;
+                            <input type="radio" name="s_type" id="s_name">Name&emsp;
+                            <input type="radio" name="s_type" id="s_surname">Surname&emsp;
+                            <input type="radio" name="s_type" id="s_mail">Mail&emsp;
+                            <input type="radio" name="s_type" id="s_sum">Sum&emsp;
+                        </div>
+                    </div>
+                <div class="form-group" id="simple_search">
+                    <div class="col-sm-6">
+                        <input type="search" class="form-control" id="search" name="search" value="" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-primary"><strong>Search</strong></button>
+                </div>
+
+                    <div class="form-group" id="date">
+                        <label for="day" class="col-sm-1 control-label">Day: </label>
+                        <div class="col-sm-2">
+                           <select id="day" name="day">
+                               {% for i in 1..31 %}
+                                   <option>{{ i }}</option>
+                               {% endfor %}
+                           </select>
+                        </div>
+                        <label for="month" class="col-sm-1 control-label">Month: </label>
+                        <div class="col-sm-2">
+                            <select id="month" name="month">
+                                {% for i in 1..12 %}
+                                    <option>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <label for="year" class="col-sm-1 control-label">Year: </label>
+                        <div class="col-sm-2">
+                            <select id="year" name="year">
+                                {% for i in 2010..2020 %}
+                                    <option>{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><strong>Search</strong></button>
+                    </div>
+
+                    <div class="form-group" id="s_price">
+                        <label for="price_from" class="col-sm-1 control-label">From: </label>
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="price_from" name="price_from" step="0.01" min='0.01' value="0.01" data-validate="required"/>
+                        </div>
+                        <label for="price_to" class="col-sm-1 control-label">To: </label>
+                        <div class="col-sm-2">
+                            <input type="number" class="form-control" id="price_to" name="price_to" step="0.01" min='0.01' value="0.01" data-validate="required"/>
+                        </div>
+                        <button type="submit" class="btn btn-primary"><strong>Search</strong></button>
+                    </div>
+                    {{ csrf.field | raw }}
+                </form><br>
+                {% for item in zakaz %}
+                    <p>{{ item.date }}:&emsp;{{ [item.name, item.surname]| join (" ") }}&emsp;({{ item.email }})&emsp; - &emsp;Sum:&emsp;{{ item.price }}</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+        <div class="row col-md-12">
+            <div class="row">
+                <h3><span class="label label-primary">Search result</span></h3>
+            </div>
+            <div class="panel-body">
+                {% for item in search %}
+                    <p>{{ item.date }}:&emsp;{{ [item.name, item.surname]| join (" ") }}&emsp;({{ item.email }})&emsp; - &emsp;Sum:&emsp;{{ item.price }}</p>
+                {% endfor %}
+            </div>
+        </div>
+</div>
+
+{% include "layouts/footer.twig"  %}
